@@ -1,7 +1,9 @@
+from __future__ import print_function
+
 import numpy as np
 import numpy.random as ra
 import scipy.fftpack as sf
-import pyfits
+from astropy.io import fits
 from create_multilayer_arbase import create_multilayer_arbase
 
 class ArScreens(object):
@@ -44,15 +46,15 @@ class ArScreens(object):
     def run(self, nframes, verbose=False):
         for j in range(nframes):
             if verbose:
-                print "time step", j
+                print("time step", j)
             self._phaseFT, screens = self.get_ar_atmos()
             for i, item in enumerate(screens):
                 self.screens[i].append(item)
     def write(self, outfile, clobber=True):
-        output = pyfits.HDUList()
-        output.append(pyfits.PrimaryHDU())
+        output = fits.HDUList()
+        output.append(fits.PrimaryHDU())
         for i, screen in enumerate(self.screens):
-            output.append(pyfits.ImageHDU(np.array(screen)))
+            output.append(fits.ImageHDU(np.array(screen)))
             output[-1].name = "Layer %i" % i
         output.writeto(outfile, clobber=clobber)
 
